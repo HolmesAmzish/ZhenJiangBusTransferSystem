@@ -1,0 +1,48 @@
+ZhenjiangBusTransferSystem/
+│
+├── src/                     # 源代码目录
+│   ├── main.cpp             # 主程序入口
+│   ├── Menu.cpp             # 菜单处理实现
+│   ├── Menu.h               # 菜单处理头文件
+│   ├── Controller/          # 控制器目录
+│   │   ├── BusController.cpp# 公交信息控制器实现
+│   │   ├── BusController.h  # 公交信息控制器头文件
+│   │   ├── UserController.cpp # 用户控制器实现
+│   │   ├── UserController.h  # 用户控制器头文件
+│   ├── Model/               # 模型目录
+│   │   ├── BusRoute.cpp     # 公交路线模型实现
+│   │   ├── BusRoute.h       # 公交路线模型头文件
+│   │   ├── BusStop.cpp      # 公交站点模型实现
+│   │   ├── BusStop.h        # 公交站点模型头文件
+│   │   ├── User.cpp         # 用户模型实现
+│   │   ├── User.h           # 用户模型头文件
+│   ├── View/                # 视图目录
+│   │   ├── BusView.cpp      # 公交信息视图实现
+│   │   ├── BusView.h        # 公交信息视图头文件
+│   │   ├── UserView.cpp     # 用户视图实现
+│   │   ├── UserView.h       # 用户视图头文件
+│
+├── data/                    # 数据文件目录
+│   ├── bus_routes.txt       # 公交线路信息文件
+│   ├── bus_stops.txt        # 公交站点信息文件
+│   ├── users.txt            # 用户信息文件
+│
+├── docs/                    # 文档目录
+│   ├── design_doc.md        # 设计文档
+│   ├── requirements.md      # 需求文档
+│
+├── tests/                   # 测试目录
+│   ├── test_main.cpp        # 测试主程序
+│   ├── Controller/          # 控制器测试目录
+│   │   ├── BusControllerTest.cpp  # 公交信息控制器测试
+│   │   ├── UserControllerTest.cpp # 用户控制器测试
+│   ├── Model/               # 模型测试目录
+│   │   ├── BusRouteTest.cpp # 公交路线模型测试
+│   │   ├── BusStopTest.cpp  # 公交站点模型测试
+│   │   ├── UserTest.cpp     # 用户模型测试
+│   ├── View/                # 视图测试目录
+│   │   ├── BusViewTest.cpp  # 公交信息视图测试
+│   │   ├── UserViewTest.cpp # 用户视图测试
+│
+├── CMakeLists.txt           # CMake构建文件
+└── README.md                # 项目说明文件
