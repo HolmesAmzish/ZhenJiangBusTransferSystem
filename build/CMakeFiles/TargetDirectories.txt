@@ -1,3 +1,0 @@
-/cygdrive/e/Projects/ZhenJiangBusTransferSystem/build/CMakeFiles/BusTransportSystem.dir
-/cygdrive/e/Projects/ZhenJiangBusTransferSystem/build/CMakeFiles/edit_cache.dir
-/cygdrive/e/Projects/ZhenJiangBusTransferSystem/build/CMakeFiles/rebuild_cache.dir
