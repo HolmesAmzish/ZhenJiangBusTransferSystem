@@ -1,0 +1,1 @@
+g++ ../src/Controller/UserController.cpp ../src/View/UserView.cpp UserModuleTest.cpp -o UserModuleTest
