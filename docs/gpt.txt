@@ -1,0 +1,203 @@
+#ifndef USER_VIEW_H
+#define USER_VIEW_H
+
+#include "../Controller/UserController.h"
+
+class UserView {
+public:
+    void displayLogin(UserController& controller);
+    void displayAdminMenu();
+    void displayUserMenu();
+};
+
+#endif
+
+/**
+ * File: UserView.cpp
+ * Date: 2024.07.05
+ * Author: Nulla
+ * Description: Source file of User view
+ */
+
+#include "UserView.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+void UserView::displayLogin(UserController& controller) {
+    while (true) {
+        cout << "Welcome to Zhenjiang Bus Transfer System!" << endl;
+        cout << "+-----| Login Menu |-----+" << endl;
+        cout << "| 1. Login               |" << endl;
+        cout << "| 2. Quit                |" << endl;
+        cout << "+------------------------+" << endl;
+        cout << "(Enter the number): ";
+        
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                string username, password;
+                cout << "Enter username: ";
+                cin >> username;
+                cout << "Enter password: ";
+                cin >> password;
+                if (controller.login(username, password)) {
+                    if (controller.isAdmin(username)) {
+                        // Display admin menu
+                        displayAdminMenu();
+                    } else {
+                        // Display user menu
+                        displayUserMenu();
+                    }
+                } else {
+                    cout << "Login failed. Please try again." << endl;
+                }
+                break;
+            }
+            case 2:
+                cout << "Exiting the system." << endl;
+                return;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+        }
+    }
+}
+
+void UserView::displayAdminMenu() {
+    cout << "+-----| Admin Menu |-----+" << endl;
+    cout << "| 1. Initialize System   |" << endl;
+    cout << "| 2. Manage Bus Stop     |" << endl;
+    cout << "| 3. Manage Bus Route    |" << endl;
+    cout << "| 4. Query Bus Route     |" << endl;
+    cout << "| 5. Logout              |" << endl;
+    cout << "+------------------------+" << endl;
+    cout << "(Enter the number): ";
+    
+    int choice;
+    cin >> choice;
+
+    switch (choice) {
+        // Handle admin menu options
+    }
+}
+
+void UserView::displayUserMenu() {
+    cout << "+-----| User Menu |-----+" << endl;
+    cout << "| 1. Query Bus Route    |" << endl;
+    cout << "| 2. Logout             |" << endl;
+    cout << "+-----------------------+" << endl;
+    cout << "(Enter the number): ";
+
+    int choice;
+    cin >> choice;
+
+    switch (choice) {
+        // Handle user menu options
+    }
+}
+/**
+ * File: User.h
+ * Date: 2024.07.05
+ * Author: Nulla
+ * Description: model of user.
+ */
+
+#ifndef USER_H
+#define USER_H
+
+#include <string>
+
+class User {
+public:
+    std::string username;
+    std::string password;
+    bool isAdmin;
+};
+
+#endif
+/**
+ * File: UserController.cpp
+ * Date: 2024.07.05
+ * Author: Nulla
+ * Description: Head file of User Module
+ */
+
+#ifndef USER_CONTROLLER_H
+#define USER_CONTROLLER_H
+
+#include "../Model/User.h"
+#include <unordered_map>
+#include <string>
+
+class UserController {
+public:
+    std::unordered_map<std::string, User> users;
+
+    void loadUser(std::string file_path);
+    bool login(std::string username, std::string password);
+    bool isAdmin(std::string username);
+};
+
+#endif
+/**
+ * File: UserController.cpp
+ * Date: 2024.07.05
+ * Author: Nulla
+ * Description: Source file of User Module
+ */
+
+#include "UserController.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+using namespace std;
+
+void UserController::loadUser(string file_path) {
+    ifstream file(file_path);
+    if (!file.is_open()) {
+        cerr << "Can't open file: " << file_path << endl;
+        return;
+    }
+
+    string line;
+    bool header = true;
+    while (getline(file, line)) {
+        // Skip header line
+        if (header) {
+            header = false;
+            continue;
+        }
+
+        stringstream ss(line);
+        string username, password, is_admin_str;
+        getline(ss, username, ',');
+        getline(ss, password, ',');
+        getline(ss, is_admin_str, ',');
+
+        bool is_admin = (is_admin_str == "true");
+        User user = {username, password, is_admin};
+        users[username] = user;
+    }
+    file.close();
+}
+
+bool UserController::login(string username, string password) {
+    auto it = users.find(username);
+    if (it != users.end() && password == it->second.password) {
+        return true;
+    }
+    return false;
+}
+
+bool UserController::isAdmin(string username) {
+    auto it = users.find(username);
+    if (it != users.end()) {
+        return it->second.isAdmin;
+    }
+    return false;
+}

@@ -1,27 +1,24 @@
 /**
- * File: UserController.cpp
+ * File: Controller/UserController.cpp
  * Date: 2024.07.05
  * Author: Nulla
  * Description: Head file of User Module
  */
 
-#ifndef USER_MODULE_H
-#define USER_MODULE_H
+#ifndef USER_CONTROLLER_H
+#define USER_CONTROLLER_H
 
 #include "../Model/User.h"
-#include <vector>
 #include <unordered_map>
-
-using namespace std;
+#include <string>
 
 class UserController {
-    private:
-    unordered_map<string, User> users;
+public:
+    std::unordered_map<std::string, User> users;
 
-    public:
-    void loadUser(string file_path);
-    bool login(string username, string password);
-    bool isAdmin(string username);
+    void loadUser(std::string file_path);
+    bool login(std::string username, std::string password);
+    bool isAdmin(std::string username);
 };
 
 #endif

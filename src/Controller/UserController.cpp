@@ -1,5 +1,5 @@
 /**
- * File: UserController.cpp
+ * File: Controller/UserController.cpp
  * Date: 2024.07.05
  * Author: Nulla
  * Description: Source file of User Module
@@ -10,6 +10,8 @@
 #include <sstream>
 #include <iostream>
 
+using namespace std;
+
 void UserController::loadUser(string file_path) {
     ifstream file(file_path);
     if (!file.is_open()) {
@@ -18,17 +20,21 @@ void UserController::loadUser(string file_path) {
     }
 
     string line;
+    bool header = true;
     while (getline(file, line)) {
-        istringstream iss(line);
-        string username, password, is_admin_str;
-        bool is_admin;
-
-        if (!(iss >> username >> password >> is_admin_str)) {
-            cerr << "File format error: " << line << endl;
+        // Skip header line
+        if (header) {
+            header = false;
             continue;
         }
 
-        is_admin = (is_admin_str == "true");
+        stringstream ss(line);
+        string username, password, is_admin_str;
+        getline(ss, username, ',');
+        getline(ss, password, ',');
+        getline(ss, is_admin_str, ',');
+
+        bool is_admin = (is_admin_str == "true");
         User user = {username, password, is_admin};
         users[username] = user;
     }

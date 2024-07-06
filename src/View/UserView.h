@@ -4,10 +4,12 @@
 #include "../Controller/UserController.h"
 
 class UserView {
-public:
-    void displayLogin();
-    void displayAdminMenu();
-    void displayUserMenu();
+    private:
+    UserController& controller;
+
+    public:
+    UserView(UserController& controller);
+    void showLogin();
 };
 
 #endif

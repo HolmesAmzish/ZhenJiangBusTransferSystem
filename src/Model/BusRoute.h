@@ -1,5 +1,5 @@
 /**
- * File: BusRoute.h
+ * File: Model/BusRoute.h
  * Date: 2024.07.05
  * Author: Nulla
  * Description: The definition of Bus Route
@@ -10,13 +10,26 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <list>
 
-class BusRoute {
-public:
-    std::string route_id;
-    std::vector<std::string> stops;
-    double fare;
-    double travel_time;
+struct BusStop {
+    int stop_id;
+    
 };
 
-#endif
+class BusRouteGraph {
+public:
+    void addNode(std::string stop_id, std::string stop_name);
+    void addEdge(std::string start, std::string destination, double cost, double travel_time);
+    void loadStops(std::string stops_file);
+    void loadRoutes(std::string routes_file);
+
+    Node* getNode(const std::string& stop_id);
+    void displayGraph() const;
+
+private:
+    std::unordered_map<std::string, Node> nodes;
+};
+
+#endif // BUS_ROUTE_H

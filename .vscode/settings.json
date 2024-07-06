@@ -45,6 +45,11 @@
         "fstream": "cpp",
         "iostream": "cpp",
         "istream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "iomanip": "cpp"
     }
 }
