@@ -7,10 +7,14 @@
 
 #ifndef USER_CONTROLLER_H
 #define USER_CONTROLLER_H
-
-#include "../Model/User.h"
 #include <unordered_map>
 #include <string>
+
+struct User {
+    std::string username;
+    std::string password;
+    bool isAdmin;
+};
 
 class UserController {
 public:

@@ -1,0 +1,1 @@
+g++ ../src/Controller/RouteController.cpp ../src/Menu.cpp RouteModuleTest.cpp -o RouteModuleTest
