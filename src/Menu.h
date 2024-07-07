@@ -8,12 +8,12 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "Controller/BusController.h"
+#include "Controller/RouteController.h"
 #include "Controller/UserController.h"
 
 class Menu {
 public:
-    Menu(UserController& userController, BusController& busController);
+    Menu(UserController& userController);
 
     void show();
 private:
@@ -27,7 +27,6 @@ private:
     void handleVisitorChoice(int choice);
 
     UserController& userController;
-    BusController& busController;
 };
 
 #endif // MENU_H

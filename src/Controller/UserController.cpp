@@ -15,7 +15,7 @@ using namespace std;
 void UserController::loadUser(string file_path) {
     ifstream file(file_path);
     if (!file.is_open()) {
-        cerr << "Can't open file: " << file_path << endl;
+        cerr << "Error: Failed to open user file " << file_path << endl;
         return;
     }
 
@@ -39,6 +39,18 @@ void UserController::loadUser(string file_path) {
         users[username] = user;
     }
     file.close();
+}
+
+void UserController::reloadUser(string file_path) {
+    users.clear();
+    cout << "Reloading user data from " << file_path << endl;
+    loadUser(file_path);
+    for (auto it = users.begin(); it != users.end(); it++) {
+        cout << "Username: " << it->first 
+        << ", Password: " << it->second.password 
+        << ", Is Admin: " << it->second.isAdmin << endl;
+    }
+    cout << "User data reloaded." << endl;
 }
 
 bool UserController::login(string username, string password) {

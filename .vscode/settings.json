@@ -50,6 +50,8 @@
         "codecvt": "cpp",
         "ctime": "cpp",
         "ratio": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "list": "cpp",
+        "queue": "cpp"
     }
 }

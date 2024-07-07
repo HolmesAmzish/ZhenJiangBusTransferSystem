@@ -17,6 +17,7 @@ public:
     std::unordered_map<std::string, User> users;
 
     void loadUser(std::string file_path);
+    void reloadUser(std::string file_path);
     bool login(std::string username, std::string password);
     bool isAdmin(std::string username);
 };

@@ -7,8 +7,8 @@
 #include "Menu.h"
 #include <iostream>
 
-Menu::Menu(UserController& userController, BusController& busController)
-    : userController(userController), busController(busController) {}
+Menu::Menu(UserController& userController)
+    : userController(userController) {}
 
 void Menu::show() {
     showWelcomeMessage();
