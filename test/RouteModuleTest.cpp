@@ -7,10 +7,7 @@
 
 #include "../src/Controller/RouteController.h"
 #include "../src/Menu.h"
-#include <iostream>
 #include <cstdlib>
-
-using namespace std;
 
 int main() {
     RouteController controller;
@@ -27,7 +24,7 @@ int main() {
         cin >> option;
         switch (option) {
             case 1: {
-                controller.displayRouteInformation();
+                controller.displayAllStops();
                 break;
             }
             case 2: {
@@ -36,7 +33,7 @@ int main() {
                 cin >> start_stop_id;
                 cout << "Enter the end stop id: ";
                 cin >> end_stop_id;
-                controller.queryShortestPathByCost(start_stop_id, end_stop_id);
+                controller.queryShortestPathByTime(start_stop_id, end_stop_id);
                 break;
             }
             case 3: {

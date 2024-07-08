@@ -5,13 +5,6 @@
  */
 
 #include "RouteController.h"
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <limits>
-#include <queue>  // Corrected typo here
-
-using namespace std;
 
 void RouteController::addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare) {
     ArcNode* arc1 = new ArcNode(route_id, end_stop_id, cost, fare);
@@ -41,7 +34,6 @@ void RouteController::addArc(int route_id, int start_stop_id, int end_stop_id, f
         start_stop->first_in = arc2;
     }
 }
-
 void RouteController::loadRouteInformation(const string& stop_file_path, const string& route_file_path) {
     ifstream stop_file(stop_file_path);
     if (!stop_file.is_open()) {
@@ -95,12 +87,51 @@ void RouteController::loadRouteInformation(const string& stop_file_path, const s
         addArc(route_id, start_stop_id, end_stop_id, cost, fare);
     }
 }
-
-void RouteController::displayRouteInformation() {
+void RouteController::displayAllStops() {
+    cout << "stop_id,\t" << "stop_name" << endl;
     for (auto& stop : stops_map) {
-        cout << stop.second->stop_id << " " << stop.second->stop_name << " loaded" << endl;
+        cout <<stop.second->stop_id << "\t\t" << stop.second->stop_name << endl;
     }
 }
+void RouteController::displayRouteById(int route_id) {
+    cout << "Displaying route with ID: " << route_id << endl;
+    bool found = false;
+
+    // Find the starting stop
+    for (const auto& stop_pair : stops_map) {
+        VexNode* stop = stop_pair.second;
+        ArcNode* arc = stop->first_out;
+
+        while (arc) {
+            if (arc->head_index == route_id) {
+                found = true;
+                int current_stop_id = stop->stop_id;
+                cout << "From stop " << stop->stop_name 
+                     << "\t(ID: " << current_stop_id << ") ";
+
+                // Continue through the route
+                while (arc && arc->head_index == route_id) {
+                    int next_stop_id = arc->tail_index;
+                    cout << "to stop " << stops_map[next_stop_id]->stop_name 
+                         << "\t(ID: " << next_stop_id << ") "
+                         << "with cost: " << arc->cost 
+                         << " and fare: " << arc->fare << endl;
+
+                    current_stop_id = next_stop_id;
+                    arc = stops_map[current_stop_id]->first_out;
+                }
+                break;
+            }
+            arc = arc->tail_link;
+        }
+        if (found) break;
+    }
+
+    if (!found) {
+        cout << "No route found with ID: " << route_id << endl;
+    }
+}
+
 
 void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> dist;
@@ -147,11 +178,13 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
         reverse(path.begin(), path.end());
         for (int stop : path) {
             cout << stop << " ";
+            if (stop != path.back()) {
+                cout << "-> ";
+            }
         }
         cout << endl;
     }
 }
-
 void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> fare;
     unordered_map<int, int> prev;
@@ -197,6 +230,9 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
         reverse(path.begin(), path.end());
         for (int stop : path) {
             cout << stop << " ";
+            if (stop != path.back()) {
+                cout << "-> ";
+            }
         }
         cout << endl;
     }

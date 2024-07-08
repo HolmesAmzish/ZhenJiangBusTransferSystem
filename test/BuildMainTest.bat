@@ -1,1 +1,1 @@
-g++ ../src/Controller/UserController.cpp ../src/Controller/UserController.cpp ../src/Menu.cpp test_main.cpp -o test_main
+g++ ../src/Controller/RouteController.cpp ../src/Controller/UserController.cpp ../src/Menu.cpp test_main.cpp -o test_main

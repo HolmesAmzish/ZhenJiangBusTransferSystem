@@ -13,6 +13,13 @@
 #include <list>
 #include <iostream>
 #include <climits>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <limits>
+#include <queue>
+
+using namespace std;
 
 struct ArcNode;
 
@@ -47,7 +54,8 @@ class RouteController {
     // The adjancey list of the graph
     std::unordered_map<int, VexNode*> stops_map;
     void loadRouteInformation(const std::string& stop_file_path, const std::string& route_file_path);
-    void displayRouteInformation();
+    void displayAllStops();
+    void displayRouteById(int route_id);
     void addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare);
     void queryShortestPathByTime(int start_stop_id, int end_stop_id);
     void queryShortestPathByCost(int start_stop_id, int end_stop_id);

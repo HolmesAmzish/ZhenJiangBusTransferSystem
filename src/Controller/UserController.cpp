@@ -6,11 +6,6 @@
  */
 
 #include "UserController.h"
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
-using namespace std;
 
 void UserController::loadUser(string file_path) {
     ifstream file(file_path);

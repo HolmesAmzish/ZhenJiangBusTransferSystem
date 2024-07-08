@@ -9,10 +9,8 @@
 #include "../src/Controller/UserController.h"
 #include "../src/Menu.h"
 
-#include <iostream>
 #include <cstdlib>
 
-using namespace std;
 
 int main() {
     cout << "Welcome to the main test program!" << endl;
@@ -23,7 +21,7 @@ int main() {
     routeController.loadRouteInformation("../data/stops.csv", "../data/routes.csv");
     while (true) {
         showLoginMenu();
-        int option;
+        int option; cin >> option;
         switch (option) {
             case 1: {
                 cout << "Please enter your username: ";
@@ -34,12 +32,54 @@ int main() {
                     system("clear");
                     cout << "Login successful!" << endl;
                     if (userController.isAdmin(username)) {
+                        /**
+                         * Admin
+                         * TODO: Implement admin menu
+                         */
                         while (true) {
                             showAdminMenu();
+                            int option; cin >> option;
+                            switch (option) {
+                                case 1: {
+
+                                }
+                            }
                         }
                     } else {
+                        /**
+                         * Guest
+                         */
                         while (true) {
                             showVisitorMenu();
+                            int option; cin >> option;
+                            switch (option) {
+                                case 1: {
+                                    system("clear");
+                                    cout << "===| Path Query |===" << endl;
+                                    cout << "Please enter your start stop id: ";
+                                    int start_stop_id; cin >> start_stop_id;
+                                    cout << "Please enter your end stop id: ";
+                                    int end_stop_id; cin >> end_stop_id;
+                                    routeController.queryShortestPathByCost(start_stop_id,end_stop_id);
+                                    break;
+                                }
+                                case 2: {
+                                    system("clear");
+                                    cout << "===| Route Query |===" << endl;
+                                    cout << "Please enter your route id: ";
+                                    int route_id; cin >> route_id;
+                                    routeController.displayRouteById(route_id);
+                                    break;
+                                }
+                                case 3: {
+                                    cout << "Exiting..." << endl;
+                                    exit(0);
+                                }
+                                default: {
+                                    cout << "Invalid option!" << endl;
+                                    break;
+                                }
+                            }
                         }
                     }
                 } else {
