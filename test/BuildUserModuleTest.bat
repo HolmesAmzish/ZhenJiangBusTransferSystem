@@ -1,1 +1,1 @@
-g++ ../src/Controller/UserController.cpp UserModuleTest.cpp -o UserModuleTest
+g++ ../src/Controller/UserController.cpp ../src/Menu.cpp UserModuleTest.cpp -o UserModuleTest

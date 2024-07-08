@@ -45,17 +45,12 @@ struct ArcNode {
 class RouteController {
     public:
     // The adjancey list of the graph
-    std::vector<VexNode*> stops_alist;
-
-    void loadRouteInformation(const std::string& stop_file_path, const string& route_file_path);
+    std::unordered_map<int, VexNode*> stops_map;
+    void loadRouteInformation(const std::string& stop_file_path, const std::string& route_file_path);
+    void displayRouteInformation();
     void addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare);
-    //void reloadRoute(const std::string& file_path);
-    //void showRoute(int route_id);
-    //void showAllStops();
     void queryShortestPathByTime(int start_stop_id, int end_stop_id);
     void queryShortestPathByCost(int start_stop_id, int end_stop_id);
-    //void deleteNode(int stop_id);
-    //void addNode(int stop_id, const std::string& stop_name);
 
 };
 

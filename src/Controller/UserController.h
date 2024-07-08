@@ -7,8 +7,12 @@
 
 #ifndef USER_CONTROLLER_H
 #define USER_CONTROLLER_H
-#include <unordered_map>
 #include <string>
+#include <vector>
+#include <unordered_map>
+#include <limits>
+#include <queue>
+#include <iostream>
 
 struct User {
     std::string username;
