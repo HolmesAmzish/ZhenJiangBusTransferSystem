@@ -51,6 +51,7 @@ class RouteController {
     public:
     // The adjancey list of the graph
     unordered_map<int, VexNode*> stops_map;
+    unordered_map<string, int> stops_name_to_id;
     vector<ArcNode> route_information;
 
     void addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare);
@@ -60,6 +61,7 @@ class RouteController {
     void displayRouteById(int route_id);
     void queryShortestPathByTime(int start_stop_id, int end_stop_id);
     void queryShortestPathByCost(int start_stop_id, int end_stop_id);
+    void recommendRoute(int start_stop_id, int intermediate_stop1_id, int intermediate_stop2_id, int destination_stop_id);
     void deleteStop(int stop_id);
     //TODO: Add the function to change the information of the stop
     //TODO: Add the function to delete or add the stop

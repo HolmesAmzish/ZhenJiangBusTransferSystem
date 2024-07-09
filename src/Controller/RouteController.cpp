@@ -9,11 +9,8 @@
 /**
  * @brief Add an arc to the route information
  * @param route_id
- * @param start_stop_id
- * @param end_stop_id
- * @param cost
- * @param fare
- * TODO: Make code more readable
+ * @param start_stop_id, end_stop_id as head and tail
+ * @param cost, fare as weight
  */
 
 void RouteController::addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare) {
@@ -45,6 +42,11 @@ void RouteController::addArc(int route_id, int start_stop_id, int end_stop_id, f
         start_stop->first_in = arc2;
     }
 }
+
+/**
+ * @brief Load route information from files
+ * @param stop_file_path, route_file_path
+ */
 void RouteController::loadRouteInformation(const string& stop_file_path, const string& route_file_path) {
     ifstream stop_file(stop_file_path);
     if (!stop_file.is_open()) {
@@ -67,6 +69,7 @@ void RouteController::loadRouteInformation(const string& stop_file_path, const s
 
         VexNode* vertex = new VexNode(stoi(stop_id_str), stop_name);
         stops_map[vertex->stop_id] = vertex;
+        stops_name_to_id[stop_name] = stoi(stop_id_str);
     }
 
     ifstream route_file(route_file_path);
@@ -99,6 +102,10 @@ void RouteController::loadRouteInformation(const string& stop_file_path, const s
     }
 }
 
+/**
+ * @brief Delete the origin data and reload the file
+ * @param stop_file_path, route_file_path
+ */
 void RouteController::reloadRouteInformation(const string& stop_file_path, const string& route_file_path) {
     // Clear stops_map
     for (auto& pair : stops_map) {
@@ -109,7 +116,6 @@ void RouteController::reloadRouteInformation(const string& stop_file_path, const
     // Clear route_information
     route_information.clear();
 
-
     loadRouteInformation(stop_file_path, route_file_path);
     displayAllStops();
     int num_of_routes = route_information.back().route_id;
@@ -117,12 +123,14 @@ void RouteController::reloadRouteInformation(const string& stop_file_path, const
         displayRouteById(i);
     }
 }
+
 void RouteController::displayAllStops() {
     cout << "stop_id, " << "stop_name" << endl;
     for (auto& stop : stops_map) {
-        cout <<stop.second->stop_id << "\t\t" << stop.second->stop_name << endl;
+        cout <<stop.second->stop_id << " " << stop.second->stop_name << endl;
     }
 }
+
 void RouteController::displayRouteById(int route_id) {
     cout << "Displaying route with ID: " << route_id << endl;
     bool found = false;
@@ -153,17 +161,16 @@ void RouteController::displayRouteById(int route_id) {
 void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> dist; // distance from start_stop_id
     unordered_map<int, int> prev; // previous stop
-    unordered_map<int, int> route_id_at_stop; // route_id used to reach each stop
+    vector<ArcNode*> edges_in_path; // vector to store the edges in the path
 
-    // initialize distances and previous stops
+    // Initialize distances and previous stops
     for (const auto& stop : stops_map) {
         dist[stop.first] = std::numeric_limits<float>::max();
         prev[stop.first] = -1;
-        route_id_at_stop[stop.first] = -1;
     }
     dist[start_stop_id] = 0;
 
-    // dijkstra's algorithm
+    // Dijkstra's algorithm
     auto cmp = [&dist](int left, int right) { return dist[left] > dist[right]; };
     std::priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
     pq.push(start_stop_id);
@@ -182,40 +189,51 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
             if (alt < dist[v]) {
                 dist[v] = alt;
                 prev[v] = u;
-                route_id_at_stop[v] = arc->route_id;
                 pq.push(v);
             }
             arc = arc->tail_link;
         }
     }
 
-    // print result
-    if (dist[end_stop_id] == numeric_limits<float>::max()) {
+    // Restore path and store edges
+    vector<int> path;
+    for (int at = end_stop_id; at != -1; at = prev[at]) {
+        path.push_back(at);
+    }
+    reverse(path.begin(), path.end());
+
+    // Reconstruct edges_in_path based on the restored path
+    for (size_t i = 1; i < path.size(); ++i) {
+        VexNode* u_node = stops_map[path[i - 1]];
+        ArcNode* arc = u_node->first_out;
+        while (arc) {
+            if (arc->tail_index == path[i]) {
+                edges_in_path.push_back(arc);
+                break;
+            }
+            arc = arc->tail_link;
+        }
+    }
+
+    // Print result
+    if (dist[end_stop_id] == std::numeric_limits<float>::max()) {
         cout << "No path found from " << start_stop_id << " to " << end_stop_id << endl;
     } else {
         cout << "Shortest time path from " << start_stop_id << " to " << end_stop_id << " with cost " << dist[end_stop_id] << endl;
 
-        vector<int> path;
-        for (int at = end_stop_id; at != -1; at = prev[at]) {
-            path.push_back(at);
-        }
-        reverse(path.begin(), path.end());
-
-        // Calculate transfer count and mark transfer stops
         int transfer_count = 0;
-        for (size_t i = 1; i < path.size(); ++i) {
-            if (route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
-                transfer_count++;
-            }
-        }
+        int current_route_id = -1;
 
-        // Print path and transfer count
         for (size_t i = 0; i < path.size(); ++i) {
             cout << stops_map[path[i]]->stop_name << "(" << path[i] << ")";
-            if (i > 0 && route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
-                cout << " [Transfer]";
+            if (i > 0 && edges_in_path[i - 1]->route_id != current_route_id) {
+                if (current_route_id != -1) {
+                    cout << " [Transfer]";
+                    transfer_count++;
+                }
+                current_route_id = edges_in_path[i - 1]->route_id;
             }
-            if (i != path.size() - 1) {
+            if (i < path.size() - 1) {
                 cout << " -> ";
             }
         }
@@ -224,27 +242,26 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
     }
 }
 
+
 /**
  * @brief Query the shortest path by cost
- * Find the shortest path by time using Dijkstra's algorithm
- * It is the same of previous one
+ * Find the shortest path by cost using Dijkstra's algorithm
  * @param start_stop_id
  * @param end_stop_id
  */
 void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> fare; // fare from start_stop_id
     unordered_map<int, int> prev; // previous stop
-    unordered_map<int, int> route_id_at_stop; // route_id used to reach each stop
+    vector<ArcNode*> edges_in_path; // vector to store the edges in the path
 
-    // initialize fares and previous stops
+    // Initialize fares and previous stops
     for (const auto& stop : stops_map) {
         fare[stop.first] = std::numeric_limits<float>::max();
         prev[stop.first] = -1;
-        route_id_at_stop[stop.first] = -1;
     }
     fare[start_stop_id] = 0;
 
-    // dijkstra's algorithm
+    // Dijkstra's algorithm
     auto cmp = [&fare](int left, int right) { return fare[left] > fare[right]; };
     std::priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
     pq.push(start_stop_id);
@@ -263,40 +280,51 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
             if (alt < fare[v]) {
                 fare[v] = alt;
                 prev[v] = u;
-                route_id_at_stop[v] = arc->route_id;
                 pq.push(v);
             }
             arc = arc->tail_link;
         }
     }
 
-    // print result
-    if (fare[end_stop_id] == numeric_limits<float>::max()) {
+    // Restore path and store edges
+    vector<int> path;
+    for (int at = end_stop_id; at != -1; at = prev[at]) {
+        path.push_back(at);
+    }
+    reverse(path.begin(), path.end());
+
+    // Reconstruct edges_in_path based on the restored path
+    for (size_t i = 1; i < path.size(); ++i) {
+        VexNode* u_node = stops_map[path[i - 1]];
+        ArcNode* arc = u_node->first_out;
+        while (arc) {
+            if (arc->tail_index == path[i]) {
+                edges_in_path.push_back(arc);
+                break;
+            }
+            arc = arc->tail_link;
+        }
+    }
+
+    // Print result
+    if (fare[end_stop_id] == std::numeric_limits<float>::max()) {
         cout << "No path found from " << start_stop_id << " to " << end_stop_id << endl;
     } else {
         cout << "Shortest cost path from " << start_stop_id << " to " << end_stop_id << " with fare " << fare[end_stop_id] << endl;
 
-        vector<int> path;
-        for (int at = end_stop_id; at != -1; at = prev[at]) {
-            path.push_back(at);
-        }
-        reverse(path.begin(), path.end());
-
-        // Calculate transfer count and mark transfer stops
         int transfer_count = 0;
-        for (size_t i = 1; i < path.size(); ++i) {
-            if (route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
-                transfer_count++;
-            }
-        }
+        int current_route_id = -1;
 
-        // Print path and transfer count
         for (size_t i = 0; i < path.size(); ++i) {
             cout << stops_map[path[i]]->stop_name << "(" << path[i] << ")";
-            if (i > 0 && route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
-                cout << " [Transfer]";
+            if (i > 0 && edges_in_path[i - 1]->route_id != current_route_id) {
+                if (current_route_id != -1) {
+                    cout << " [Transfer]";
+                    transfer_count++;
+                }
+                current_route_id = edges_in_path[i - 1]->route_id;
             }
-            if (i != path.size() - 1) {
+            if (i < path.size() - 1) {
                 cout << " -> ";
             }
         }
@@ -306,8 +334,30 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
 }
 
 /**
+ * @brief Recommend the shortest route passing through specified intermediate stops
+ * @param start_stop_id The ID of the start stop
+ * @param intermediate_stop1_id The ID of the first intermediate stop
+ * @param intermediate_stop2_id The ID of the second intermediate stop
+ * @param destination_stop_id The ID of the destination stop
+ */
+void RouteController::recommendRoute(int start_stop_id, int intermediate_stop1_id, int intermediate_stop2_id, int destination_stop_id) {
+    // Step 1: Find shortest path from start to intermediate_stop1
+    queryShortestPathByTime(start_stop_id, intermediate_stop1_id);
+    cout << "Path from start to first intermediate stop:" << endl;
+    
+    // Step 2: Find shortest path from intermediate_stop1 to intermediate_stop2
+    queryShortestPathByTime(intermediate_stop1_id, intermediate_stop2_id);
+    cout << "Path from first intermediate stop to second intermediate stop:" << endl;
+    
+    // Step 3: Find shortest path from intermediate_stop2 to destination
+    queryShortestPathByTime(intermediate_stop2_id, destination_stop_id);
+    cout << "Path from second intermediate stop to destination:" << endl;
+}
+
+/**
  * @brief Delete a stop
  * @param stop_id
+ * TODO: Fix
  */
 void RouteController::deleteStop(int stop_id) {
     if (stops_map.find(stop_id) == stops_map.end()) {
