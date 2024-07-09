@@ -100,11 +100,16 @@ void RouteController::loadRouteInformation(const string& stop_file_path, const s
 }
 
 void RouteController::reloadRouteInformation(const string& stop_file_path, const string& route_file_path) {
-    for (auto& stop : stops_map)
-        delete stop.second;
-        route_information.clear();
-        stops_map.clear();
-    
+    // Clear stops_map
+    for (auto& pair : stops_map) {
+        delete pair.second;
+    }
+    stops_map.clear(); // Clear map
+
+    // Clear route_information
+    route_information.clear();
+
+
     loadRouteInformation(stop_file_path, route_file_path);
     displayAllStops();
     int num_of_routes = route_information.back().route_id;
@@ -113,7 +118,7 @@ void RouteController::reloadRouteInformation(const string& stop_file_path, const
     }
 }
 void RouteController::displayAllStops() {
-    cout << "stop_id,\t" << "stop_name" << endl;
+    cout << "stop_id, " << "stop_name" << endl;
     for (auto& stop : stops_map) {
         cout <<stop.second->stop_id << "\t\t" << stop.second->stop_name << endl;
     }
@@ -144,7 +149,6 @@ void RouteController::displayRouteById(int route_id) {
  * Find the shortest path by time using Dijkstra's algorithm
  * @param start_stop_id
  * @param end_stop_id
- * TODO: Add transfer count
  */
 void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> dist; // distance from start_stop_id
@@ -197,7 +201,7 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
         }
         reverse(path.begin(), path.end());
 
-        // Calculate transfer count
+        // Calculate transfer count and mark transfer stops
         int transfer_count = 0;
         for (size_t i = 1; i < path.size(); ++i) {
             if (route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
@@ -206,10 +210,13 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
         }
 
         // Print path and transfer count
-        for (int stop : path) {
-            cout << stop << " ";
-            if (stop != path.back()) {
-                cout << "-> ";
+        for (size_t i = 0; i < path.size(); ++i) {
+            cout << stops_map[path[i]]->stop_name << "(" << path[i] << ")";
+            if (i > 0 && route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
+                cout << " [Transfer]";
+            }
+            if (i != path.size() - 1) {
+                cout << " -> ";
             }
         }
         cout << endl;
@@ -223,20 +230,23 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
  * It is the same of previous one
  * @param start_stop_id
  * @param end_stop_id
- * TODO: Add transfer count, Make code readable
  */
 void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id) {
-    unordered_map<int, float> fare;
-    unordered_map<int, int> prev;
+    unordered_map<int, float> fare; // fare from start_stop_id
+    unordered_map<int, int> prev; // previous stop
+    unordered_map<int, int> route_id_at_stop; // route_id used to reach each stop
 
+    // initialize fares and previous stops
     for (const auto& stop : stops_map) {
-        fare[stop.first] = numeric_limits<float>::max();
+        fare[stop.first] = std::numeric_limits<float>::max();
         prev[stop.first] = -1;
+        route_id_at_stop[stop.first] = -1;
     }
     fare[start_stop_id] = 0;
 
+    // dijkstra's algorithm
     auto cmp = [&fare](int left, int right) { return fare[left] > fare[right]; };
-    priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
+    std::priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
     pq.push(start_stop_id);
 
     while (!pq.empty()) {
@@ -253,28 +263,45 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
             if (alt < fare[v]) {
                 fare[v] = alt;
                 prev[v] = u;
+                route_id_at_stop[v] = arc->route_id;
                 pq.push(v);
             }
             arc = arc->tail_link;
         }
     }
 
+    // print result
     if (fare[end_stop_id] == numeric_limits<float>::max()) {
         cout << "No path found from " << start_stop_id << " to " << end_stop_id << endl;
     } else {
         cout << "Shortest cost path from " << start_stop_id << " to " << end_stop_id << " with fare " << fare[end_stop_id] << endl;
+
         vector<int> path;
         for (int at = end_stop_id; at != -1; at = prev[at]) {
             path.push_back(at);
         }
         reverse(path.begin(), path.end());
-        for (int stop : path) {
-            cout << stop << " ";
-            if (stop != path.back()) {
-                cout << "-> ";
+
+        // Calculate transfer count and mark transfer stops
+        int transfer_count = 0;
+        for (size_t i = 1; i < path.size(); ++i) {
+            if (route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
+                transfer_count++;
+            }
+        }
+
+        // Print path and transfer count
+        for (size_t i = 0; i < path.size(); ++i) {
+            cout << stops_map[path[i]]->stop_name << "(" << path[i] << ")";
+            if (i > 0 && route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
+                cout << " [Transfer]";
+            }
+            if (i != path.size() - 1) {
+                cout << " -> ";
             }
         }
         cout << endl;
+        cout << "Total transfers: " << transfer_count << endl;
     }
 }
 

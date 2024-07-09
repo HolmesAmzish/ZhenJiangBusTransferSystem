@@ -96,20 +96,41 @@ int main() {
                     showManagerMenu();
                     int option; cin >> option;
                     if (option == 1) {
-                        //TODO: Display All stops
+                        route_controller.displayAllStops();
+                        closeSession();
+
                     } else if (option == 2) {
                         //TODO: Add Stop
                     } else if (option == 3) {
-                        //TODO: Delete Stop
+                        cout << "===| Deleting Stop |===" << endl;
+                        cout << "Enter Stop ID: ";
+                        int stop_id; cin >> stop_id;
+                        route_controller.deleteStop(stop_id);
+                        closeSession();
+
                     } else if (option == 4) {
-                        //TODO: Reload System
+                        cout << "===| Reloading |===" << endl;
+                        string user_file_path, stop_file_path, route_file_path;
+                        cout << "Enter User File Path: ";
+                        cin >> user_file_path;
+                        user_controller.reloadUser(user_file_path);
+                        cout << "Enter Stop File Path: ";
+                        cin >> stop_file_path;
+                        cout << "Enter Route File Path: ";
+                        cin >> route_file_path;
+                        cout << "Showing reloaded information..." << endl;
+                        route_controller.reloadRouteInformation(stop_file_path, route_file_path);
+                        closeSession();
+
+                    //} else if (option == 5) {
+                        //TODO Add Route
+                    //} else if (option == 6) {
+                        //TODO Delete Route
                     } else if (option == 5) {
-                        //TODO: Add Route
-                    } else if (option == 6) {
-                        //TODO: Delete Route
-                    } else if (option == 7) {
+                        system("clear");
                         break;
                     } else {
+                        system("clear");
                         cout << "Invalid option, please try again." << endl;
                     }
                 }
