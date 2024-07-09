@@ -29,6 +29,7 @@ int main() {
                 cout << "Please enter your password: ";
                 string password; cin >> password;
                 if (userController.login(username, password)) {
+                    // Login as string username and password
                     system("clear");
                     cout << "Login successful!" << endl;
                     if (userController.isAdmin(username)) {

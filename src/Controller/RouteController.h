@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <list>
 #include <iostream>
 #include <climits>
@@ -25,41 +26,42 @@ struct ArcNode;
 
 struct VexNode {
     int stop_id;
-    std::string stop_name;
-    ArcNode* first_in;
-    ArcNode* first_out;
-    VexNode(int id, const std::string& name) : stop_id(id), stop_name(name), first_in(nullptr), first_out(nullptr) {}
+    string stop_name;
+    ArcNode *first_in, *first_out;
+    VexNode(int id, string name) :
+    stop_id(id), stop_name(name),
+    first_in(nullptr), first_out(nullptr) {}
 };
 
 struct ArcNode {
+    int route_id;
     // index of two verticess
-    int head_index;
-    int tail_index;
-
+    int head_index, tail_index;
     // weight of the edge
-    float cost;
-    float fare;
-
+    float cost, fare;
     // pointer to the next ArcNode
-    ArcNode* head_link;
-    ArcNode* tail_link;
-
-    ArcNode(int h, int t, float c, float f) :
+    ArcNode *head_link, *tail_link;
+    ArcNode(int h, int t, float c, float f, int route_id) :
     head_index(h), tail_index(t), cost(c), fare(f),
-    head_link(nullptr), tail_link(nullptr) {}
+    head_link(nullptr), tail_link(nullptr),
+    route_id(route_id) {}
 };
 
 class RouteController {
     public:
     // The adjancey list of the graph
-    std::unordered_map<int, VexNode*> stops_map;
-    void loadRouteInformation(const std::string& stop_file_path, const std::string& route_file_path);
+    unordered_map<int, VexNode*> stops_map;
+    vector<ArcNode> route_information;
+
+    void addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare);
+    void loadRouteInformation(const string& stop_file_path, const string& route_file_path);
     void displayAllStops();
     void displayRouteById(int route_id);
-    void addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare);
     void queryShortestPathByTime(int start_stop_id, int end_stop_id);
     void queryShortestPathByCost(int start_stop_id, int end_stop_id);
 
+    //TODO: Add the function to change the information of the stop
+    //TODO: Add the function to delete or add the stop
 };
 
-#endif // ROUTE_CONTROLLER_H
+#endif

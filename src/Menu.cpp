@@ -12,7 +12,7 @@ void showLoginMenu() {
     cout << "| 1. Login                         |" << endl;
     cout << "| 2. Exit                          |" << endl;
     cout << "+----------------------------------+" << endl;
-    cout << "(Enter the number): ";
+    cout << "(Enter the option): ";
 }
 
 void showAdminMenu() {
@@ -23,14 +23,15 @@ void showAdminMenu() {
     cout << "| 4. Query Bus Route               |" << endl;
     cout << "| 5. Logout                        |" << endl;
     cout << "+----------------------------------+" << endl;
-    cout << "(Enter the number): ";
+    cout << "(Enter the option): ";
 }
 
 void showVisitorMenu() {
     cout << "+----------| User Menu |----------+" << endl;
-    cout << "| 1. Query Bus Route              |" << endl;
-    cout << "| 2. Check recommended Route      |" << endl;
-    cout << "| 3. Logout                       |" << endl;
+    cout << "| 1. Find Shortest Route          |" << endl;
+    cout << "| 2. Query Bus Route              |" << endl;
+    cout << "| 3. Check Recommended Route      |" << endl;
+    cout << "| 4. Exit                         |" << endl;
     cout << "+---------------------------------+" << endl;
-    cout << "(Enter the number): ";
+    cout << "(Enter the option): ";
 }
