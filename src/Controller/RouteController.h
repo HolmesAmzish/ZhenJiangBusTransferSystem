@@ -55,11 +55,12 @@ class RouteController {
 
     void addArc(int route_id, int start_stop_id, int end_stop_id, float cost, float fare);
     void loadRouteInformation(const string& stop_file_path, const string& route_file_path);
+    void reloadRouteInformation(const string& stop_file_path, const string& route_file_path);
     void displayAllStops();
     void displayRouteById(int route_id);
     void queryShortestPathByTime(int start_stop_id, int end_stop_id);
     void queryShortestPathByCost(int start_stop_id, int end_stop_id);
-
+    void deleteStop(int stop_id);
     //TODO: Add the function to change the information of the stop
     //TODO: Add the function to delete or add the stop
 };

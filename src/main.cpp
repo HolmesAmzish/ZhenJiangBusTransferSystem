@@ -54,11 +54,116 @@ int main() {
     cout << "Login successful!" << endl;
     while (true) {
         string option;
-        if (!user_controller.isAdmin(username)) {
+        if (user_controller.isAdmin(username)) {
+            /**
+             * Admin
+             */
+            showAdminMenu();
+            cin >> option;
+            if (option == "1") {
+                cout << "===| Query |===" << endl;
+                cout << "Enter Route ID: ";
+                int route_id; cin >> route_id;
+                route_controller.displayRouteById(route_id);
+                closeSession();
+
+            } else if (option == "2") {
+                cout << "===| Shortest Path by Time |===" << endl;
+                int start_stop_id, end_stop_id;
+                cout << "Enter Start Stop ID: ";
+                cin >> start_stop_id;
+                cout << "Enter End Stop ID: ";
+                cin >> end_stop_id;
+                route_controller.queryShortestPathByTime(start_stop_id, end_stop_id);
+                closeSession();
+
+            } else if (option == "3") {
+                cout << "===| Shortest Path by Cost |===" << endl;
+                int start_stop_id, end_stop_id;
+                cout << "Enter Start Stop ID: ";
+                cin >> start_stop_id;
+                cout << "Enter End Stop ID: ";
+                cin >> end_stop_id;
+                route_controller.queryShortestPathByCost(start_stop_id, end_stop_id);
+                closeSession();
+
+            } else if (option == "4") {
+                //TODO: Check Recommended Route
+
+            } else if (option == "5") {
+                cout << "Welcome to route manage system" << endl;
+                while (true) {
+                    showManagerMenu();
+                    int option; cin >> option;
+                    if (option == 1) {
+                        //TODO: Display All stops
+                    } else if (option == 2) {
+                        //TODO: Add Stop
+                    } else if (option == 3) {
+                        //TODO: Delete Stop
+                    } else if (option == 4) {
+                        //TODO: Reload System
+                    } else if (option == 5) {
+                        //TODO: Add Route
+                    } else if (option == 6) {
+                        //TODO: Delete Route
+                    } else if (option == 7) {
+                        break;
+                    } else {
+                        cout << "Invalid option, please try again." << endl;
+                    }
+                }
+            } else if (option == "6") {
+                cout << "Loging out..." << endl;
+                cout << "Thank you for using the system." << endl;
+                exit(0);
+
+            } else {
+                cout << "Invalid option, please try again." << endl;
+            }
+        } else {
+            /**
+             * Visitor
+             */
             showVisitorMenu();
             cin >> option;
             if (option == "1") {
+                cout << "===| Query |===" << endl;
+                cout << "Enter Route ID: ";
+                int route_id; cin >> route_id;
+                route_controller.displayRouteById(route_id);
+                closeSession();
 
+            } else if (option == "2") {
+                cout << "===| Shortest Path by Time |===" << endl;
+                int start_stop_id, end_stop_id;
+                cout << "Enter Start Stop ID: ";
+                cin >> start_stop_id;
+                cout << "Enter End Stop ID: ";
+                cin >> end_stop_id;
+                route_controller.queryShortestPathByTime(start_stop_id, end_stop_id);
+                closeSession();
+
+            } else if (option == "3") {
+                cout << "===| Shortest Path by Cost |===" << endl;
+                int start_stop_id, end_stop_id;
+                cout << "Enter Start Stop ID: ";
+                cin >> start_stop_id;
+                cout << "Enter End Stop ID: ";
+                cin >> end_stop_id;
+                route_controller.queryShortestPathByCost(start_stop_id, end_stop_id);
+                closeSession();
+
+            } else if (option == "4") {
+                //TODO: Check Recommended Route
+
+            } else if (option == "5") {
+                cout << "Loging out..." << endl;
+                cout << "Thank you for using the system." << endl;
+                exit(0);
+
+            } else {
+                cout << "Invalid option, please try again." << endl;
             }
         }
     }

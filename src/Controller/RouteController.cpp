@@ -98,6 +98,20 @@ void RouteController::loadRouteInformation(const string& stop_file_path, const s
         addArc(route_id, start_stop_id, end_stop_id, cost, fare);
     }
 }
+
+void RouteController::reloadRouteInformation(const string& stop_file_path, const string& route_file_path) {
+    for (auto& stop : stops_map)
+        delete stop.second;
+        route_information.clear();
+        stops_map.clear();
+    
+    loadRouteInformation(stop_file_path, route_file_path);
+    displayAllStops();
+    int num_of_routes = route_information.back().route_id;
+    for (int i = 0; i < num_of_routes; i++) {
+        displayRouteById(i);
+    }
+}
 void RouteController::displayAllStops() {
     cout << "stop_id,\t" << "stop_name" << endl;
     for (auto& stop : stops_map) {
@@ -111,12 +125,12 @@ void RouteController::displayRouteById(int route_id) {
         if (arc.route_id == route_id) {
             found = true;
             cout << "Route ID: " << route_id
-                 << "\tFrom " << stops_map[arc.tail_index]->stop_name 
-                 << "(ID: " << arc.tail_index << ")"
-                 << "\tto " << stops_map[arc.head_index]->stop_name
+                 << " From " << stops_map[arc.tail_index]->stop_name 
+                 << " (ID: " << arc.tail_index << ")"
+                 << " to " << stops_map[arc.head_index]->stop_name
                  << " (ID: "<< arc.head_index << ")"
-                 << "\twith cost: " << arc.cost
-                 << "\tFare: " << arc.fare << endl;
+                 << " with cost: " << arc.cost
+                 << " Fare: " << arc.fare << endl;
         }
     }
 
@@ -135,11 +149,13 @@ void RouteController::displayRouteById(int route_id) {
 void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> dist; // distance from start_stop_id
     unordered_map<int, int> prev; // previous stop
+    unordered_map<int, int> route_id_at_stop; // route_id used to reach each stop
 
     // initialize distances and previous stops
     for (const auto& stop : stops_map) {
         dist[stop.first] = std::numeric_limits<float>::max();
         prev[stop.first] = -1;
+        route_id_at_stop[stop.first] = -1;
     }
     dist[start_stop_id] = 0;
 
@@ -162,6 +178,7 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
             if (alt < dist[v]) {
                 dist[v] = alt;
                 prev[v] = u;
+                route_id_at_stop[v] = arc->route_id;
                 pq.push(v);
             }
             arc = arc->tail_link;
@@ -173,12 +190,22 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
         cout << "No path found from " << start_stop_id << " to " << end_stop_id << endl;
     } else {
         cout << "Shortest time path from " << start_stop_id << " to " << end_stop_id << " with cost " << dist[end_stop_id] << endl;
+
         vector<int> path;
         for (int at = end_stop_id; at != -1; at = prev[at]) {
             path.push_back(at);
         }
-        // reverse the path
         reverse(path.begin(), path.end());
+
+        // Calculate transfer count
+        int transfer_count = 0;
+        for (size_t i = 1; i < path.size(); ++i) {
+            if (route_id_at_stop[path[i]] != route_id_at_stop[path[i - 1]]) {
+                transfer_count++;
+            }
+        }
+
+        // Print path and transfer count
         for (int stop : path) {
             cout << stop << " ";
             if (stop != path.back()) {
@@ -186,6 +213,7 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
             }
         }
         cout << endl;
+        cout << "Total transfers: " << transfer_count << endl;
     }
 }
 

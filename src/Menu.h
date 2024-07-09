@@ -9,6 +9,8 @@
 
 void showLoginMenu();
 void showAdminMenu();
+void showManagerMenu();
 void showVisitorMenu();
+void closeSession();
 
 #endif // MENU_H
