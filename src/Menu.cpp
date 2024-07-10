@@ -8,51 +8,51 @@
 #include <iostream>
 using namespace std;
 void showLoginMenu() {
-    cout << "+----------| Login Menu |----------+" << endl;
-    cout << "| 1. Login                         |" << endl;
-    cout << "| 2. Exit                          |" << endl;
-    cout << "+----------------------------------+" << endl;
-    cout << "(Enter the option): ";
+    cout << "+-----------| 登录页面 |------------+" << endl;
+    cout << "| 1. 登录                           |" << endl;
+    cout << "| 2. 退出                           |" << endl;
+    cout << "+-----------------------------------+" << endl;
+    cout << "输入选择: ";
 }
 
 void showAdminMenu() {
-    cout << "+----------| Admin Menu |----------+" << endl;
-    cout << "| 1. Query Bus Route               |" << endl;
-    cout << "| 2. Find Shortest Route by Time   |" << endl;
-    cout << "| 3. Find Shortest Route by Cost   |" << endl;
-    cout << "| 4. Check Recommended Route       |" << endl;
-    cout << "| 5. Maintain Routes               |" << endl;
-    cout << "| 6. Exit                          |" << endl;
-    cout << "+----------------------------------+" << endl;
-    cout << "(Enter the option): ";
+    cout << "+----------| 管理员页面  |----------+" << endl;
+    cout << "| 1. 查询公交车路线                 |" << endl;
+    cout << "| 2. 寻找最小花费路线               |" << endl;
+    cout << "| 3. 寻找最短时间路线               |" << endl;
+    cout << "| 4. 查询推荐旅游路线               |" << endl;
+    cout << "| 5. 维护路线                       |" << endl;
+    cout << "| 6. 退出                           |" << endl;
+    cout << "+-----------------------------------+" << endl;
+    cout << "输入选择: ";
 }
 
 void showManagerMenu() {
-    cout << "+----------| Manage Menu |---------+" << endl;
-    cout << "| 1. Display All Stop              |" << endl;
-    cout << "| 2. Add Stop                      |" << endl;
-    cout << "| 3. Delete Stop                   |" << endl;
-    cout << "| 4. Reload System                 |" << endl;
-    //cout << "| 5. Add Route                     |" << endl;
-    //cout << "| 6. Delete Route                  |" << endl;
-    cout << "| 5. Go Back                       |" << endl;
-    cout << "+----------------------------------+" << endl;
-    cout << "(Enter the option): ";
+    cout << "+------------| 维护页面 |-----------+" << endl;
+    cout << "| 1. 显示所有站点                   |" << endl;
+    cout << "| 2. 添加站点                       |" << endl;
+    cout << "| 3. 删除站点                       |" << endl;
+    cout << "| 4. 重新初始化系统                 |" << endl;
+    //cout << "| 5. 添加路线                       |" << endl;
+    //cout << "| 6. 删除路线                       |" << endl;
+    cout << "| 5. 返回                           |" << endl;
+    cout << "+-----------------------------------+" << endl;
+    cout << "输入选择: ";
 }
 
 void showVisitorMenu() {
-    cout << "+----------| Guest Menu |----------+" << endl;
-    cout << "| 1. Query Bus Route               |" << endl;
-    cout << "| 2. Find Shortest Route by Time   |" << endl;
-    cout << "| 3. Find Shortest Route by Cost   |" << endl;
-    cout << "| 4. Check Recommended Route       |" << endl;
-    cout << "| 5. Exit                          |" << endl;
-    cout << "+----------------------------------+" << endl;
-    cout << "(Enter the option): ";
+    cout << "+-----------| 访客页面 |------------+" << endl;
+    cout << "| 1. 查询公交车路线                 |" << endl;
+    cout << "| 2. 寻找最小花费路线               |" << endl;
+    cout << "| 3. 寻找最短时间路线               |" << endl;
+    cout << "| 4. 查询推荐旅游路线               |" << endl;
+    cout << "| 5. 退出                           |" << endl;
+    cout << "+-----------------------------------+" << endl;
+    cout << "输入选择: ";
 }
 
 void closeSession() {
-    cout << "Press any key to continue..." << endl;
+    cout << "输入任意键以继续..." << endl;
     cin.ignore();
     cin.get();
     system("clear");

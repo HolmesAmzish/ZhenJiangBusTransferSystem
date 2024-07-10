@@ -24,24 +24,24 @@ int main() {
         showLoginMenu();
         string option; cin >> option; // Set the option as char type for invalid input
         if (option == "1") {
-            cout << "===| Login |===" << endl;
-            cout << "Enter Username: ";
+            cout << "=====| 登录 |=====" << endl;
+            cout << "输入用户名: ";
             cin >> username;
-            cout << "Password: ";
+            cout << "密码: ";
             cin >> password;
             if (user_controller.login(username, password)) {
                 have_login = true;
                 break;
             } else {
                 system("clear");
-                cout << "Login failed, incorrect username or password." << endl;
+                cout << "登录失败，错误的用户名或密码。" << endl;
             }
         } else if (option == "2") {
-            cout << "Thanks for using the program." << endl;
+            cout << "感谢使用镇江公交车换乘系统。" << endl;
             exit(0);
         } else {
             system("clear");
-            cout << "Invalid option, please try again." << endl;
+            cout << "错误选择，请重试。" << endl;
         }
     }
 
@@ -51,7 +51,7 @@ int main() {
     RouteController route_controller;
     route_controller.loadRouteInformation("data/stops.csv", "data/routes.csv");
     system("clear");
-    cout << "Login successful!" << endl;
+    cout << "登陆成功！" << endl;
     while (true) {
         string option;
         if (user_controller.isAdmin(username)) {
@@ -67,19 +67,19 @@ int main() {
             showAdminMenu();
             cin >> option;
             if (option == "1") {
-                cout << "===| Query |===" << endl;
-                cout << "Enter Route ID: ";
+                cout << "=====| 查询 |=====" << endl;
+                cout << "输入路线ID: ";
                 int route_id; cin >> route_id;
                 route_controller.displayRouteById(route_id);
                 closeSession();
 
             } else if (option == "2") {
-                cout << "===| Shortest Path by Time |===" << endl;
+                cout << "=====| 最短时间路径 |=====" << endl;
                 string start_stop_name, end_stop_name;
                 int start_stop_id, end_stop_id;
-                cout << "Enter Start Stop ID or name: ";
+                cout << "输入起始站: ";
                 cin >> start_stop_name;
-                cout << "Enter End Stop ID or name: ";
+                cout << "输入终点站: ";
                 cin >> end_stop_name;
 
                 // Convert string to int
@@ -92,12 +92,12 @@ int main() {
                 closeSession();
 
             } else if (option == "3") {
-                cout << "===| Shortest Path by Cost |===" << endl;
+                cout << "=====| 最短花费路径 |=====" << endl;
                 string start_stop_name, end_stop_name;
                 int start_stop_id, end_stop_id;
-                cout << "Enter Start Stop ID or name: ";
+                cout << "输入起始站: ";
                 cin >> start_stop_name;
-                cout << "Enter End Stop ID or name: ";
+                cout << "输入起始站: ";
                 cin >> end_stop_name;
 
                 // Convert string to int
@@ -110,8 +110,31 @@ int main() {
                 closeSession();
 
             } else if (option == "4") {
-                //TODO: Check Recommended Route
+                cout << "=====| 推荐路线 |=====" << endl;
+                string start_stop_name, second_stop_name ,third_stop_name, end_stop_name;
+                int start_stop_id, second_stop_id, third_stop_id, end_stop_id;
+                cout << "输入起始站: ";
+                cin >> start_stop_name;
+                cout << "输入第二站: ";
+                cin >> second_stop_name;
+                cout << "输入第三站: ";
+                cin >> third_stop_name;
+                cout << "输入终点站: ";
+                cin >> end_stop_name;
 
+                // Convert string to int
+                if (all_of(start_stop_name.begin(), start_stop_name.end(), ::isdigit)) start_stop_id = stoi(start_stop_name);
+                else start_stop_id = route_controller.stops_name_to_id[start_stop_name];
+                if (all_of(second_stop_name.begin(), second_stop_name.end(), ::isdigit)) second_stop_id = stoi(second_stop_name);
+                else second_stop_id = route_controller.stops_name_to_id[second_stop_name];
+                if (all_of(third_stop_name.begin(), third_stop_name.end(), ::isdigit)) third_stop_id = stoi(third_stop_name);
+                else third_stop_id = route_controller.stops_name_to_id[third_stop_name];
+                if (all_of(end_stop_name.begin(), end_stop_name.end(), ::isdigit)) end_stop_id = stoi(end_stop_name);
+                else end_stop_id = route_controller.stops_name_to_id[end_stop_name];
+                
+                route_controller.recommendRoute(start_stop_id, second_stop_id, third_stop_id,end_stop_id);
+                closeSession();
+                
             } else if (option == "5") {
                 /**
                  * @brief Manager menu
@@ -124,7 +147,7 @@ int main() {
                  * Go Back                       
                  */
                 system("clear");
-                cout << "Welcome to route manage system" << endl;
+                cout << "欢迎访问管理系统。" << endl;
                 while (true) {
                     showManagerMenu();
                     int option; cin >> option;
@@ -133,47 +156,63 @@ int main() {
                         closeSession();
 
                     } else if (option == 2) {
+                        cout << "=====| 添加站点 |=====" << endl;
+                        int route_id, stop_id;
+                        string stop_name;
+                        float cost, fare;
+                        cout << "输入路线编号: ";
+                        cin >> route_id;
+                        cout << "输入要添加的站点ID: ";
+                        cin >> stop_id;
+                        cout << "输入要添加的站点名称: ";
+                        cin >> stop_name;
+                        cout << "输入要添加的站点花费: ";
+                        cin >> cost;
+                        cout << "输入要添加的站点时间: ";
+                        cin >> fare;
+                        route_controller.addStop(route_id, stop_id, stop_name, cost, fare);
+                        closeSession();
 
                     } else if (option == 3) {
-                        cout << "===| Deleting Stop |===" << endl;
-                        cout << "Enter Stop ID: ";
+                        cout << "=====| 删除站点 |=====" << endl;
+                        cout << "输入要删除的站点ID: ";
                         int stop_id; cin >> stop_id;
                         route_controller.deleteStop(stop_id);
                         closeSession();
 
                     } else if (option == 4) {
-                        cout << "===| Reloading |===" << endl;
+                        cout << "=====| 重新初始化 |=====" << endl;
                         string user_file_path, stop_file_path, route_file_path;
-                        cout << "Enter User File Path: ";
+                        cout << "输入用户文件: ";
                         cin >> user_file_path;
                         user_controller.reloadUser(user_file_path);
-                        cout << "Enter Stop File Path: ";
+                        cout << "输入站点文件: ";
                         cin >> stop_file_path;
-                        cout << "Enter Route File Path: ";
+                        cout << "输入路线文件: ";
                         cin >> route_file_path;
-                        cout << "Showing reloaded information..." << endl;
+                        cout << "加载重新加载信息..." << endl;
                         route_controller.reloadRouteInformation(stop_file_path, route_file_path);
                         closeSession();
 
+                    //} else if (option == 5) {
+
+                    //} else if (option == 6) {
+
                     } else if (option == 5) {
-
-                    } else if (option == 6) {
-
-                    } else if (option == 7) {
                         system("clear");
                         break;
                     } else {
                         system("clear");
-                        cout << "Invalid option, please try again." << endl;
+                        cout << "错误选择，请重试。" << endl;
                     }
                 }
             } else if (option == "6") {
-                cout << "Loging out..." << endl;
-                cout << "Thank you for using the system." << endl;
+                cout << "退出中..." << endl;
+                cout << "感谢使用镇江公交车换乘系统" << endl;
                 exit(0);
 
             } else {
-                cout << "Invalid option, please try again." << endl;
+                cout << "错误选择，请重试。" << endl;
             }
         } else {
 
@@ -188,19 +227,19 @@ int main() {
             showVisitorMenu();
             cin >> option;
             if (option == "1") {
-                cout << "===| Query |===" << endl;
-                cout << "Enter Route ID: ";
+                cout << "=====| 查询 |=====" << endl;
+                cout << "输入线路ID: ";
                 int route_id; cin >> route_id;
                 route_controller.displayRouteById(route_id);
                 closeSession();
 
             } else if (option == "2") {
-                cout << "===| Shortest Path by Time |===" << endl;
+                cout << "=====| 最短时间路线 |=====" << endl;
                 string start_stop_name, end_stop_name;
                 int start_stop_id, end_stop_id;
-                cout << "Enter Start Stop ID or name: ";
+                cout << "输入起始站: ";
                 cin >> start_stop_name;
-                cout << "Enter End Stop ID or name: ";
+                cout << "输入终点站: ";
                 cin >> end_stop_name;
 
                 // Convert string to int
@@ -213,12 +252,12 @@ int main() {
                 closeSession();
 
             } else if (option == "3") {
-                cout << "===| Shortest Path by Cost |===" << endl;
+                cout << "=====| 最小花费路线 |=====" << endl;
                 string start_stop_name, end_stop_name;
                 int start_stop_id, end_stop_id;
-                cout << "Enter Start Stop ID or name: ";
+                cout << "输入起始站: ";
                 cin >> start_stop_name;
-                cout << "Enter End Stop ID or name: ";
+                cout << "输入终点站: ";
                 cin >> end_stop_name;
 
                 // Convert string to int
@@ -231,14 +270,38 @@ int main() {
                 closeSession();
 
             } else if (option == "4") {
+                cout << "=====| 推荐路线 |=====" << endl;
+                string start_stop_name, second_stop_name ,third_stop_name, end_stop_name;
+                int start_stop_id, second_stop_id, third_stop_id, end_stop_id;
+                cout << "输入起始站: ";
+                cin >> start_stop_name;
+                cout << "输入第二站: ";
+                cin >> second_stop_name;
+                cout << "输入第三站: ";
+                cin >> third_stop_name;
+                cout << "输入终点站: ";
+                cin >> end_stop_name;
+
+                // Convert string to int
+                if (all_of(start_stop_name.begin(), start_stop_name.end(), ::isdigit)) start_stop_id = stoi(start_stop_name);
+                else start_stop_id = route_controller.stops_name_to_id[start_stop_name];
+                if (all_of(second_stop_name.begin(), second_stop_name.end(), ::isdigit)) second_stop_id = stoi(second_stop_name);
+                else second_stop_id = route_controller.stops_name_to_id[second_stop_name];
+                if (all_of(third_stop_name.begin(), third_stop_name.end(), ::isdigit)) third_stop_id = stoi(third_stop_name);
+                else third_stop_id = route_controller.stops_name_to_id[third_stop_name];
+                if (all_of(end_stop_name.begin(), end_stop_name.end(), ::isdigit)) end_stop_id = stoi(end_stop_name);
+                else end_stop_id = route_controller.stops_name_to_id[end_stop_name];
+                
+                route_controller.recommendRoute(start_stop_id, second_stop_id, third_stop_id,end_stop_id);
+                closeSession();
 
             } else if (option == "5") {
-                cout << "Loging out..." << endl;
-                cout << "Thank you for using the system." << endl;
+                cout << "退出中..." << endl;
+                cout << "感谢使用镇江公交车换乘系统。" << endl;
                 exit(0);
 
             } else {
-                cout << "Invalid option, please try again." << endl;
+                cout << "错误选择，请重试。" << endl;
             }
         }
     }

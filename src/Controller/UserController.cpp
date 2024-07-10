@@ -10,7 +10,7 @@
 void UserController::loadUser(string file_path) {
     ifstream file(file_path);
     if (!file.is_open()) {
-        cerr << "Error: Failed to open user file " << file_path << endl;
+        cerr << "错误，无法打开文件 " << file_path << endl;
         return;
     }
 
@@ -38,14 +38,14 @@ void UserController::loadUser(string file_path) {
 
 void UserController::reloadUser(string file_path) {
     users.clear();
-    cout << "Reloading user data from " << file_path << endl;
+    cout << "正在从文件中读取信息，文件路径 " << file_path << endl;
     loadUser(file_path);
     for (auto it = users.begin(); it != users.end(); it++) {
-        cout << "Username: " << it->first 
-        << ", Password: " << it->second.password 
-        << ", Is Admin: " << it->second.isAdmin << endl;
+        cout << "用户名: " << it->first 
+        << ", 密码: " << it->second.password 
+        << ", 管理员: " << it->second.isAdmin << endl;
     }
-    cout << "User data reloaded." << endl;
+    cout << "用户信息已重新载入。" << endl;
 }
 
 bool UserController::login(string username, string password) {

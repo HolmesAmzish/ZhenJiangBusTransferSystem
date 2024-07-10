@@ -5,6 +5,7 @@
  */
 
 #include "RouteController.h"
+using namespace std;
 
 /**
  * @brief Add an arc to the route information
@@ -50,7 +51,7 @@ void RouteController::addArc(int route_id, int start_stop_id, int end_stop_id, f
 void RouteController::loadRouteInformation(const string& stop_file_path, const string& route_file_path) {
     ifstream stop_file(stop_file_path);
     if (!stop_file.is_open()) {
-        cerr << "Error: Failed to open stop file " << stop_file_path << endl;
+        cerr << "错误，无法打开文件 " << stop_file_path << endl;
         return;
     }
 
@@ -74,7 +75,7 @@ void RouteController::loadRouteInformation(const string& stop_file_path, const s
 
     ifstream route_file(route_file_path);
     if (!route_file.is_open()) {
-        cerr << "Error: Failed to open route file " << route_file_path << endl;
+        cerr << "错误，无法打开文件 " << route_file_path << endl;
         return;
     }
 
@@ -125,30 +126,30 @@ void RouteController::reloadRouteInformation(const string& stop_file_path, const
 }
 
 void RouteController::displayAllStops() {
-    cout << "stop_id, " << "stop_name" << endl;
+    cout << "站点ID, " << "站点名称" << endl;
     for (auto& stop : stops_map) {
         cout <<stop.second->stop_id << " " << stop.second->stop_name << endl;
     }
 }
 
 void RouteController::displayRouteById(int route_id) {
-    cout << "Displaying route with ID: " << route_id << endl;
+    cout << "显示路线ID: " << route_id << endl;
     bool found = false;
     for (ArcNode arc : route_information) {
         if (arc.route_id == route_id) {
             found = true;
-            cout << "Route ID: " << route_id
-                 << " From " << stops_map[arc.tail_index]->stop_name 
+            cout << "路线ID: " << route_id
+                 << " 从 " << stops_map[arc.tail_index]->stop_name 
                  << " (ID: " << arc.tail_index << ")"
-                 << " to " << stops_map[arc.head_index]->stop_name
+                 << " 到 " << stops_map[arc.head_index]->stop_name
                  << " (ID: "<< arc.head_index << ")"
-                 << " with cost: " << arc.cost
-                 << " Fare: " << arc.fare << endl;
+                 << " 时间: " << arc.cost << " 分"
+                 << " 票价: " << arc.fare << " 角" << endl;
         }
     }
 
     if (!found) {
-        cout << "No route found with ID: " << route_id << endl;
+        cout << "没有此路线: " << route_id << endl;
     }
 }
 
@@ -159,9 +160,9 @@ void RouteController::displayRouteById(int route_id) {
  * @param end_stop_id
  */
 void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id) {
-    unordered_map<int, float> dist; // distance from start_stop_id
-    unordered_map<int, int> prev; // previous stop
-    vector<ArcNode*> edges_in_path; // vector to store the edges in the path
+    unordered_map<int, float> dist;  // distance from start_stop_id
+    unordered_map<int, int> prev;    // previous stop
+    vector<ArcNode*> edges_in_path;  // vector to store the edges in the path
 
     // Initialize distances and previous stops
     for (const auto& stop : stops_map) {
@@ -217,9 +218,9 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
 
     // Print result
     if (dist[end_stop_id] == std::numeric_limits<float>::max()) {
-        cout << "No path found from " << start_stop_id << " to " << end_stop_id << endl;
+        cout << "没有路线从 " << start_stop_id << " 到 " << end_stop_id << endl;
     } else {
-        cout << "Shortest time path from " << start_stop_id << " to " << end_stop_id << " with cost " << dist[end_stop_id] << endl;
+        cout << "最短时间路线从 " << start_stop_id << " 到 " << end_stop_id << "，时间花费 " << dist[end_stop_id] << " 分" << endl;
 
         int transfer_count = 0;
         int current_route_id = -1;
@@ -228,7 +229,7 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
             cout << stops_map[path[i]]->stop_name << "(" << path[i] << ")";
             if (i > 0 && edges_in_path[i - 1]->route_id != current_route_id) {
                 if (current_route_id != -1) {
-                    cout << " [Transfer]";
+                    cout << " [转乘]";
                     transfer_count++;
                 }
                 current_route_id = edges_in_path[i - 1]->route_id;
@@ -238,7 +239,7 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
             }
         }
         cout << endl;
-        cout << "Total transfers: " << transfer_count << endl;
+        cout << "转乘数: " << transfer_count << endl;
     }
 }
 
@@ -251,7 +252,7 @@ void RouteController::queryShortestPathByTime(int start_stop_id, int end_stop_id
  */
 void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id) {
     unordered_map<int, float> fare; // fare from start_stop_id
-    unordered_map<int, int> prev; // previous stop
+    unordered_map<int, int> prev;   // previous stop
     vector<ArcNode*> edges_in_path; // vector to store the edges in the path
 
     // Initialize fares and previous stops
@@ -308,9 +309,9 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
 
     // Print result
     if (fare[end_stop_id] == std::numeric_limits<float>::max()) {
-        cout << "No path found from " << start_stop_id << " to " << end_stop_id << endl;
+        cout << "没有路线从 " << start_stop_id << " 到 " << end_stop_id << endl;
     } else {
-        cout << "Shortest cost path from " << start_stop_id << " to " << end_stop_id << " with fare " << fare[end_stop_id] << endl;
+        cout << "最短花费路线从 " << start_stop_id << " 到 " << end_stop_id << "，花费 " << fare[end_stop_id] << " 角" << endl;
 
         int transfer_count = 0;
         int current_route_id = -1;
@@ -319,7 +320,7 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
             cout << stops_map[path[i]]->stop_name << "(" << path[i] << ")";
             if (i > 0 && edges_in_path[i - 1]->route_id != current_route_id) {
                 if (current_route_id != -1) {
-                    cout << " [Transfer]";
+                    cout << "[转乘]";
                     transfer_count++;
                 }
                 current_route_id = edges_in_path[i - 1]->route_id;
@@ -329,7 +330,7 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
             }
         }
         cout << endl;
-        cout << "Total transfers: " << transfer_count << endl;
+        cout << "转乘数: " << transfer_count << endl;
     }
 }
 
@@ -343,114 +344,195 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
 void RouteController::recommendRoute(int start_stop_id, int intermediate_stop1_id, int intermediate_stop2_id, int destination_stop_id) {
     // Step 1: Find shortest path from start to intermediate_stop1
     queryShortestPathByTime(start_stop_id, intermediate_stop1_id);
-    cout << "Path from start to first intermediate stop:" << endl;
+    cout << "从" << stops_map[start_stop_id]->stop_name << "到" << stops_map[intermediate_stop1_id]->stop_name << "的最短路径为：" << endl;
     
     // Step 2: Find shortest path from intermediate_stop1 to intermediate_stop2
     queryShortestPathByTime(intermediate_stop1_id, intermediate_stop2_id);
-    cout << "Path from first intermediate stop to second intermediate stop:" << endl;
+    cout << "从" << stops_map[intermediate_stop1_id]->stop_name << "到" << stops_map[intermediate_stop2_id]->stop_name << "的最短路径为：" << endl;
     
     // Step 3: Find shortest path from intermediate_stop2 to destination
     queryShortestPathByTime(intermediate_stop2_id, destination_stop_id);
-    cout << "Path from second intermediate stop to destination:" << endl;
+    cout << "从" << stops_map[intermediate_stop2_id]->stop_name << "到" << stops_map[destination_stop_id]->stop_name << "的最短路径为：" << endl;
 }
 
 /**
- * @brief Delete a stop
- * @param stop_id
- * TODO: Fix
+ * @brief
+ * 
  */
 void RouteController::deleteStop(int stop_id) {
-    if (stops_map.find(stop_id) == stops_map.end()) {
-        cout << "Stop ID " << stop_id << " not found." << endl;
-        return;
-    }
+    auto it = stops_map.find(stop_id);
+    if (it != stops_map.end()) {
+        VexNode* node = it->second;
 
-    VexNode* stop = stops_map[stop_id];
-    unordered_map<int, vector<ArcNode*>> out_arcs_by_route;
-    unordered_map<int, vector<ArcNode*>> in_arcs_by_route;
+        // Collect incoming and outgoing arcs
+        vector<ArcNode*> incoming_arcs;
+        ArcNode* arc = node->first_in;
+        while (arc) {
+            incoming_arcs.push_back(arc);
+            arc = arc->head_link;
+        }
 
-    // Collect all outgoing and incoming arcs grouped by route_id
-    ArcNode* arc = stop->first_out;
-    while (arc) {
-        out_arcs_by_route[arc->route_id].push_back(arc);
-        arc = arc->tail_link;
-    }
-
-    arc = stop->first_in;
-    while (arc) {
-        in_arcs_by_route[arc->route_id].push_back(arc);
-        arc = arc->head_link;
-    }
-
-    // Reconnect arcs for each route_id
-    for (const auto& pair : out_arcs_by_route) {
-        int route_id = pair.first;
-        auto& out_arcs = pair.second;
-
-        if (in_arcs_by_route.find(route_id) != in_arcs_by_route.end()) {
-            auto& in_arcs = in_arcs_by_route[route_id];
-            for (ArcNode* in_arc : in_arcs) {
-                for (ArcNode* out_arc : out_arcs) {
-                    ArcNode* new_arc = new ArcNode(in_arc->tail_index, out_arc->head_index, in_arc->cost + out_arc->cost, in_arc->fare + out_arc->fare, route_id);
-                    if (stops_map.find(in_arc->tail_index) != stops_map.end()) {
-                        VexNode* tail_stop = stops_map[in_arc->tail_index];
-                        new_arc->tail_link = tail_stop->first_out;
-                        tail_stop->first_out = new_arc;
+        vector<ArcNode*> outgoing_arcs;
+        arc = node->first_out;
+        while (arc) {
+            outgoing_arcs.push_back(arc);
+            arc = arc->tail_link;
+        }
+        
+        // Reconnect incoming and outgoing arcs
+        if (incoming_arcs.size() > 1) {
+            for (ArcNode* in_arc : incoming_arcs) {
+                for (ArcNode* out_arc : outgoing_arcs) {
+                    if (in_arc->route_id == out_arc->route_id) {
+                        addArc(in_arc->route_id, in_arc->tail_index, out_arc->head_index, in_arc->cost + out_arc->cost, in_arc->fare + out_arc->fare);
                     }
-                    if (stops_map.find(out_arc->head_index) != stops_map.end()) {
-                        VexNode* head_stop = stops_map[out_arc->head_index];
-                        new_arc->head_link = head_stop->first_in;
-                        head_stop->first_in = new_arc;
-                    }
-                    route_information.push_back(*new_arc);
                 }
             }
         }
+        
+        // Remove all arcs involving the stop
+        for (ArcNode* arc : incoming_arcs) {
+            // Unlink the arc from the linked list before deletion
+            if (arc->tail_link) {
+                arc->tail_link->head_link = arc->head_link;
+            }
+            if (arc->head_link) {
+                arc->head_link->tail_link = arc->tail_link;
+            }
+            delete arc;
+        }
+
+        for (ArcNode* arc : outgoing_arcs) {
+            // Unlink the arc from the linked list before deletion
+            if (arc->tail_link) {
+                arc->tail_link->head_link = arc->head_link;
+            }
+            if (arc->head_link) {
+                arc->head_link->tail_link = arc->tail_link;
+            }
+            delete arc;
+        }
+
+        // Remove the stop from the stops_map and delete the node
+        stops_map.erase(it);
+        stops_name_to_id.erase(node->stop_name);
+        delete node;
+        cout << "站点已删除: " << stop_id << endl;
+    } else {
+        cerr << "错误，站点ID不存在: " << stop_id << endl;
+    }
+}
+
+void RouteController::addStop(int route_id, int stop_id, const string& stop_name, float cost, float fare) {
+    // Check if stop ID already exists
+    if (stops_map.find(stop_id) != stops_map.end()) {
+        cerr << "错误，站点ID已存在: " << stop_id << endl;
+        return;
     }
 
-    // Remove arcs related to stop_id
+    // Create a new stop
+    VexNode* new_stop = new VexNode(stop_id, stop_name);
+
+    // Add the stop to the stops_map and stops_name_to_id
+    stops_map[stop_id] = new_stop;
+    stops_name_to_id[stop_name] = stop_id;
+
+    ArcNode* last_arc = nullptr;
+    int max_tail_index = -1;
+
+    for (const auto& arc : route_information) {
+        if (arc.route_id == route_id && arc.tail_index > max_tail_index) {
+            max_tail_index = arc.tail_index;
+            last_arc = const_cast<ArcNode*>(&arc);
+        }
+    }
+
+    // If a last stop is found, add an arc from the last stop to the new stop
+    if (last_arc != nullptr) {
+        addArc(route_id, last_arc->tail_index, stop_id, cost, fare);
+    } else {
+        // Handle the case where the route has no stops yet
+        cout << "注意：该路线目前没有站点，新站点已添加，但未连接到任何现有站点。" << endl;
+    }
+
+    cout << "站点已添加: " << stop_name << " (ID: " << stop_id << ")" << endl;
+}
+
+void RouteController::addRoute(const string& route_file_path) {
+    ifstream route_file(route_file_path);
+    if (!route_file.is_open()) {
+        cerr << "错误，无法打开文件 " << route_file_path << endl;
+        return;
+    }
+
+    string line;
+    bool header = true;
+    while (getline(route_file, line)) {
+        if (header) {
+            header = false;
+            continue;
+        }
+
+        stringstream ss(line);
+        string columns[5];
+        for (int i = 0; i < 5; i++) {
+            getline(ss, columns[i], ',');
+        }
+
+        int route_id = stoi(columns[0]);
+        int start_stop_id = stoi(columns[1]);
+        int end_stop_id = stoi(columns[2]);
+        float cost = stof(columns[3]);
+        float fare = stof(columns[4]);
+
+        addArc(route_id, start_stop_id, end_stop_id, cost, fare);
+    }
+
+    cout << "路线已添加" << endl;
+}
+
+void RouteController::deleteRoute(int route_id) {
+    vector<ArcNode*> arcs_to_delete;
+
     for (auto& pair : stops_map) {
         VexNode* node = pair.second;
 
-        // Remove outgoing arcs
+        // Delete outgoing arcs
         ArcNode* prev_arc = nullptr;
-        arc = node->first_out;
+        ArcNode* arc = node->first_out;
         while (arc) {
-            if (arc->head_index == stop_id) {
+            if (arc->route_id == route_id) {
                 if (prev_arc) {
                     prev_arc->tail_link = arc->tail_link;
                 } else {
                     node->first_out = arc->tail_link;
                 }
-                delete arc;
-                arc = (prev_arc) ? prev_arc->tail_link : node->first_out;
-            } else {
-                prev_arc = arc;
-                arc = arc->tail_link;
+                arcs_to_delete.push_back(arc);
             }
+            prev_arc = arc;
+            arc = arc->tail_link;
         }
 
-        // Remove incoming arcs
+        // Delete incoming arcs
         prev_arc = nullptr;
         arc = node->first_in;
         while (arc) {
-            if (arc->tail_index == stop_id) {
+            if (arc->route_id == route_id) {
                 if (prev_arc) {
                     prev_arc->head_link = arc->head_link;
                 } else {
                     node->first_in = arc->head_link;
                 }
-                delete arc;
-                arc = (prev_arc) ? prev_arc->head_link : node->first_in;
-            } else {
-                prev_arc = arc;
-                arc = arc->head_link;
+                arcs_to_delete.push_back(arc);
             }
+            prev_arc = arc;
+            arc = arc->head_link;
         }
     }
 
-    // Remove the stop from stops_map
-    stops_map.erase(stop_id);
-    delete stop;
-    cout << "Stop ID " << stop_id << " deleted successfully." << endl;
+    for (ArcNode* arc : arcs_to_delete) {
+        delete arc;
+    }
+
+    cout << "路线已删除: " << route_id << endl;
 }
