@@ -50,10 +50,3 @@ void showVisitorMenu() {
     cout << "+-----------------------------------+" << endl;
     cout << "输入选择: ";
 }
-
-void closeSession() {
-    cout << "输入任意键以继续..." << endl;
-    cin.ignore();
-    cin.get();
-    system("clear");
-}

@@ -7,19 +7,7 @@
 #ifndef ROUTE_CONTROLLER_H
 #define ROUTE_CONTROLLER_H
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
-#include <list>
-#include <climits>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <limits>
-#include <queue>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 struct ArcNode;
@@ -60,7 +48,6 @@ class RouteController {
     void recommendRoute(int start_stop_id, int intermediate_stop1_id, int intermediate_stop2_id, int destination_stop_id);
     void deleteStop(int stop_id);
     void addStop(int route_id, int stop_id, const string& stop_name, float cost, float fare);
-    void addRoute(const string& route_file_path);
     void deleteRoute(int route_id);
 };
 

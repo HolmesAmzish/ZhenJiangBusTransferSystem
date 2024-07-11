@@ -389,7 +389,7 @@ void RouteController::deleteStop(int stop_id) {
                 }
             }
         }
-        
+
         // Remove all arcs involving the stop
         for (ArcNode* arc : incoming_arcs) {
             // Unlink the arc from the linked list before deletion
@@ -449,46 +449,13 @@ void RouteController::addStop(int route_id, int stop_id, const string& stop_name
 
     // If a last stop is found, add an arc from the last stop to the new stop
     if (last_arc != nullptr) {
-        addArc(route_id, last_arc->tail_index, stop_id, cost, fare);
+        addArc(route_id, last_arc->head_index, stop_id, cost, fare);
     } else {
         // Handle the case where the route has no stops yet
         cout << "注意：该路线目前没有站点，新站点已添加，但未连接到任何现有站点。" << endl;
     }
 
     cout << "站点已添加: " << stop_name << " (ID: " << stop_id << ")" << endl;
-}
-
-void RouteController::addRoute(const string& route_file_path) {
-    ifstream route_file(route_file_path);
-    if (!route_file.is_open()) {
-        cerr << "错误，无法打开文件 " << route_file_path << endl;
-        return;
-    }
-
-    string line;
-    bool header = true;
-    while (getline(route_file, line)) {
-        if (header) {
-            header = false;
-            continue;
-        }
-
-        stringstream ss(line);
-        string columns[5];
-        for (int i = 0; i < 5; i++) {
-            getline(ss, columns[i], ',');
-        }
-
-        int route_id = stoi(columns[0]);
-        int start_stop_id = stoi(columns[1]);
-        int end_stop_id = stoi(columns[2]);
-        float cost = stof(columns[3]);
-        float fare = stof(columns[4]);
-
-        addArc(route_id, start_stop_id, end_stop_id, cost, fare);
-    }
-
-    cout << "路线已添加" << endl;
 }
 
 void RouteController::deleteRoute(int route_id) {
