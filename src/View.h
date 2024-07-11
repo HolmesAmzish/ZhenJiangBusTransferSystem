@@ -19,6 +19,8 @@ void queryBusRoute(RouteController& controller);
 void findShortestPathByTime(RouteController& controller);
 void findShortestPathByCost(RouteController& controller);
 void checkRecommendRoute(RouteController& controller);
+void addStop(RouteController& controller);
+void reinitialize(UserController& user_controller, RouteController& route_controller);
 void closeSession();
 
 #endif // MENU_H

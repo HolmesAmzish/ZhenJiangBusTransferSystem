@@ -1,7 +1,7 @@
 /**
- * File: Controller/RouteController.h
- * Date: 2024.07.07
- * Author: Nulla
+ * @brief: Controller/RouteController.h
+ * @date: 2024.07.07
+ * @author: Nulla
  */
 
 #ifndef ROUTE_CONTROLLER_H
@@ -9,8 +9,6 @@
 
 #include <bits/stdc++.h>
 using namespace std;
-
-struct ArcNode;
 
 struct VexNode {
     int stop_id;
@@ -48,7 +46,7 @@ class RouteController {
     void recommendRoute(int start_stop_id, int intermediate_stop1_id, int intermediate_stop2_id, int destination_stop_id);
     void deleteStop(int stop_id);
     void addStop(int route_id, int stop_id, const string& stop_name, float cost, float fare);
-    void deleteRoute(int route_id);
+    //void deleteRoute(int route_id);
 };
 
 #endif

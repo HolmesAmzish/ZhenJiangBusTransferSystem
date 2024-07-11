@@ -1,8 +1,8 @@
 /**
- * File: Controller/UserController.cpp
- * Date: 2024.07.05
- * Author: Nulla
- * Description: Source file of User Module
+ * @program: Controller/UserController.cpp
+ * @date: 2024.07.05
+ * @author: Nulla
+ * @details: Source file of User Module
  */
 
 #include "UserController.h"

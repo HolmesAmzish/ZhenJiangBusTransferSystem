@@ -13,7 +13,7 @@
 
 int main() {
     system("clear");
-    cout << "Zhenjiang Bus Transfer System" << endl;
+    cout << "镇江公交车换乘系统" << endl;
 
     //Login Loop
     UserController user_controller;
@@ -94,21 +94,7 @@ int main() {
                         closeSession();
 
                     } else if (option == 2) {
-                        cout << "=====| 添加站点 |=====" << endl;
-                        int route_id, stop_id;
-                        string stop_name;
-                        float cost, fare;
-                        cout << "输入路线编号: ";
-                        cin >> route_id;
-                        cout << "输入要添加的站点ID: ";
-                        cin >> stop_id;
-                        cout << "输入要添加的站点名称: ";
-                        cin >> stop_name;
-                        cout << "输入要添加的站点花费: ";
-                        cin >> cost;
-                        cout << "输入要添加的站点时间: ";
-                        cin >> fare;
-                        route_controller.addStop(route_id, stop_id, stop_name, cost, fare);
+                        addStop(route_controller);
                         closeSession();
 
                     } else if (option == 3) {
@@ -119,17 +105,7 @@ int main() {
                         closeSession();
 
                     } else if (option == 4) {
-                        cout << "=====| 重新初始化 |=====" << endl;
-                        string user_file_path, stop_file_path, route_file_path;
-                        cout << "输入用户文件: ";
-                        cin >> user_file_path;
-                        user_controller.reloadUser(user_file_path);
-                        cout << "输入站点文件: ";
-                        cin >> stop_file_path;
-                        cout << "输入路线文件: ";
-                        cin >> route_file_path;
-                        cout << "加载重新加载信息..." << endl;
-                        route_controller.reloadRouteInformation(stop_file_path, route_file_path);
+                        reinitialize(user_controller, route_controller);
                         closeSession();
 
                     } else if (option == 5) {
@@ -146,6 +122,7 @@ int main() {
                 exit(0);
 
             } else {
+                system("clear");
                 cout << "错误选择，请重试。" << endl;
             }
         } else {
@@ -182,6 +159,7 @@ int main() {
                 exit(0);
 
             } else {
+                system("clear");
                 cout << "错误选择，请重试。" << endl;
             }
         }

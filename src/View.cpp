@@ -83,6 +83,38 @@ void checkRecommendRoute(RouteController& controller) {
     controller.recommendRoute(start_stop_id, second_stop_id, third_stop_id,end_stop_id);
 }
 
+void addStop(RouteController& controller) {
+    cout << "=====| 添加站点 |=====" << endl;
+    int route_id, stop_id;
+    string stop_name;
+    float cost, fare;
+    cout << "输入路线编号: ";
+    cin >> route_id;
+    cout << "输入要添加的站点ID: ";
+    cin >> stop_id;
+    cout << "输入要添加的站点名称: ";
+    cin >> stop_name;
+    cout << "输入要添加的站点花费: ";
+    cin >> cost;
+    cout << "输入要添加的站点时间: ";
+    cin >> fare;
+    controller.addStop(route_id, stop_id, stop_name, cost, fare);
+}
+
+void reinitialize(UserController& user_controller, RouteController& route_controller) {
+    cout << "=====| 重新初始化 |=====" << endl;
+    string user_file_path, stop_file_path, route_file_path;
+    cout << "输入用户文件: ";
+    cin >> user_file_path;
+    user_controller.reloadUser(user_file_path);
+    cout << "输入站点文件: ";
+    cin >> stop_file_path;
+    cout << "输入路线文件: ";
+    cin >> route_file_path;
+    cout << "加载重新加载信息..." << endl;
+    route_controller.reloadRouteInformation(stop_file_path, route_file_path);
+}
+
 void closeSession() {
     cout << "输入任意键以继续..." << endl;
     cin.ignore();
