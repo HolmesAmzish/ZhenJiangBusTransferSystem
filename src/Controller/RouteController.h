@@ -10,15 +10,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct VexNode {
-    int stop_id;
-    string stop_name;
-    ArcNode *first_in, *first_out;
-    VexNode(int id, string name) :
-    stop_id(id), stop_name(name),
-    first_in(nullptr), first_out(nullptr) {}
-};
-
 struct ArcNode {
     int route_id;
     int head_index, tail_index;
@@ -29,6 +20,17 @@ struct ArcNode {
     head_link(nullptr), tail_link(nullptr),
     route_id(route_id) {}
 };
+
+struct VexNode {
+    int stop_id;
+    string stop_name;
+    ArcNode *first_in, *first_out;
+    VexNode(int id, string name) :
+    stop_id(id), stop_name(name),
+    first_in(nullptr), first_out(nullptr) {}
+};
+
+
 
 class RouteController {
     public:
