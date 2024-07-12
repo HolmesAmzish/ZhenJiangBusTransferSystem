@@ -1,8 +1,8 @@
 /**
- * Program: main.cpp
- * Date: 2024.07.07
- * Author: Nulla
- * Description: Main file
+ * @brief: main.cpp
+ * @date: 2024.07.07
+ * @author: Nulla
+ * @details: Main file
  */
 
 #include "Controller/RouteController.h"
@@ -80,9 +80,8 @@ int main() {
                  * 1. Display All Stop              
                  * 2. Add Stop                      
                  * 3. Delete Stop                   
-                 * 4. Reload System                   
-                 * TODO: 6. Delete Route                
-                 * Go Back                       
+                 * 4. Reload System             
+                 * 5. Go Back                       
                  */
                 system("clear");
                 cout << "欢迎访问管理系统。" << endl;

@@ -334,86 +334,71 @@ void RouteController::queryShortestPathByCost(int start_stop_id, int end_stop_id
  * @brief Recommend the shortest route passing through specified intermediate stops
  */
 void RouteController::recommendRoute(int stop1_id, int stop2_id, int stop3_id, int stop4_id) {
-    // Step 1: Find shortest path from start to intermediate_stop1
     queryShortestPathByTime(stop1_id, stop2_id);
     cout << "从" << stops_map[stop1_id]->stop_name << "到" << stops_map[stop2_id]->stop_name << "的最短路径为：" << endl;
     
-    // Step 2: Find shortest path from intermediate_stop1 to intermediate_stop2
     queryShortestPathByTime(stop2_id, stop3_id);
     cout << "从" << stops_map[stop2_id]->stop_name << "到" << stops_map[stop3_id]->stop_name << "的最短路径为：" << endl;
     
-    // Step 3: Find shortest path from intermediate_stop2 to destination
     queryShortestPathByTime(stop3_id, stop4_id);
     cout << "从" << stops_map[stop3_id]->stop_name << "到" << stops_map[stop4_id]->stop_name << "的最短路径为：" << endl;
 }
 
 void RouteController::deleteStop(int stop_id) {
     auto it = stops_map.find(stop_id);
-    if (it != stops_map.end()) {
-        VexNode* node = it->second;
-
-        // Collect incoming and outgoing arcs
-        vector<ArcNode*> incoming_arcs;
-        ArcNode* arc = node->first_in;
-        while (arc) {
-            incoming_arcs.push_back(arc);
-            arc = arc->head_link;
-        }
-
-        vector<ArcNode*> outgoing_arcs;
-        arc = node->first_out;
-        while (arc) {
-            outgoing_arcs.push_back(arc);
-            arc = arc->tail_link;
-        }
-        
-        // Reconnect incoming and outgoing arcs
-        for (ArcNode* in_arc : incoming_arcs) {
-            for (ArcNode* out_arc : outgoing_arcs) {
-                if (in_arc->route_id == out_arc->route_id) {
-                    ArcNode* new_arc = new ArcNode(
-                        in_arc->route_id, 
-                        in_arc->tail_index, 
-                        out_arc->head_index, 
-                        in_arc->cost + out_arc->cost, 
-                        in_arc->fare + out_arc->fare
-                    );
-
-                    // Update links
-                    new_arc->head_link = out_arc;
-                    new_arc->tail_link = in_arc;
-
-                    if (in_arc->head_link == out_arc) {
-                        in_arc->head_link = new_arc;
-                    }
-                    if (out_arc->tail_link == in_arc) {
-                        out_arc->tail_link = new_arc;
-                    }
-                }
-            }
-        }
-
-        // Remove all arcs involving the stop
-        auto arc_it = route_information.begin();
-        while (arc_it != route_information.end()) {
-            ArcNode* arc = *arc_it;
-            if (arc->head_index == stop_id || arc->tail_index == stop_id) {
-                delete arc; // Free the memory if dynamically allocated
-                arc_it = route_information.erase(arc_it); // Erase and move to the next element
-            } else {
-                ++arc_it;
-            }
-        }
-
-        // Remove the stop from the stops_map and delete the node
-        stops_map.erase(it);
-        stops_name_to_id.erase(node->stop_name);
-        delete node;
-
-        cout << "站点已删除: " << stop_id << endl;
-    } else {
+    if (it == stops_map.end()) {
         cerr << "错误，站点ID不存在: " << stop_id << endl;
+        return;
     }
+
+    VexNode* node = it->second;
+
+    vector<ArcNode*> arcs_to_delete;
+    for (ArcNode* arc = node->first_in; arc;) {
+        arcs_to_delete.push_back(arc);
+        arc = arc->head_link;
+    }
+    for (ArcNode* arc = node->first_out; arc;) {
+        arcs_to_delete.push_back(arc);
+        arc = arc->tail_link;
+    }
+
+    stops_map.erase(it);
+    stops_name_to_id.erase(node->stop_name);
+    delete node;
+
+    for (ArcNode* arc : arcs_to_delete) {
+        if (arc->head_index == stop_id) {
+            if (arc->head_link) {
+                arc->head_link->tail_link = arc->tail_link;
+            }
+            if (arc->tail_link) {
+                arc->tail_link->head_link = arc->head_link;
+            }
+        } else if (arc->tail_index == stop_id) {
+            if (arc->tail_link) {
+                arc->tail_link->head_link = arc->head_link;
+            }
+            if (arc->head_link) {
+                arc->head_link->tail_link = arc->tail_link;
+            }
+        }
+    }
+
+    // route_information
+    route_information.erase(
+        remove_if(route_information.begin(), route_information.end(),
+                   [stop_id](const ArcNode& arc) {
+                       return arc.head_index == stop_id || arc.tail_index == stop_id;
+                   }),
+        route_information.end()
+    );
+
+    for (ArcNode* arc : arcs_to_delete) {
+        delete arc;
+    }
+
+    cout << "站点已删除: " << stop_id << endl;
 }
 
 void RouteController::addStop(int route_id, int stop_id, const string& stop_name, float cost, float fare) {
