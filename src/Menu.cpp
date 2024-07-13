@@ -1,7 +1,7 @@
 /**
- * File: Menu.cpp
- * Date: 2024.07.06
- * Author: Nulla
+ * @brief: Menu.cpp
+ * @date: 2024.07.06
+ * @author: Nulla
  */
 
 #include "Menu.h"
@@ -33,8 +33,6 @@ void showManagerMenu() {
     cout << "| 2. 添加站点                       |" << endl;
     cout << "| 3. 删除站点                       |" << endl;
     cout << "| 4. 重新初始化系统                 |" << endl;
-    //cout << "| 5. 添加路线                       |" << endl;
-    //cout << "| 6. 删除路线                       |" << endl;
     cout << "| 5. 返回                           |" << endl;
     cout << "+-----------------------------------+" << endl;
     cout << "输入选择: ";
